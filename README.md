@@ -1,4 +1,4 @@
-# alura_intercambios
+# Alura Intercambios
 
 # Índice
 * [Abrir e rodar o projeto](#Abrir-e-rodar-o-projeto)
