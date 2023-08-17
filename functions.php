@@ -1,4 +1,24 @@
 <?php
+add_action('init', 'alura_intercambios_registrando_taxonomia');
+add_action('init', 'alura_intercambios_registrando_menu');
+add_action('init', 'alura_intercambios_registrando_post_customizado');
+add_action('after_setup_theme', 'alura_intercambios_adicionando_recursos_ao_tema');
+
+/**
+ * Registra a taxonomia países.
+ *
+ * @return void
+ */
+function alura_intercambios_registrando_taxonomia(){
+    register_taxonomy(
+        'paises',
+        'destinos',
+        array(
+            'labels' => array('name' => 'Países'),
+            'hierarchical' => true
+        )
+    );
+}
 
 /**
  * Registra um menu de navegação.
@@ -38,7 +58,3 @@ function alura_intercambios_registrando_post_customizado(){
         'menu_icon' => 'dashicons-admin-site'
     ));
 }
-
-add_action('init', 'alura_intercambios_registrando_menu');
-add_action('init', 'alura_intercambios_registrando_post_customizado');
-add_action('after_setup_theme', 'alura_intercambios_adicionando_recursos_ao_tema');
