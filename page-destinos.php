@@ -1,20 +1,37 @@
 <?php
+// Cabeçalho do site
 $estiloPagina = 'destinos.css';
 require_once('header.php');
 
-echo '<form action="#" class="container-alura formulario-pesquisa-paises">';
+// Formulario de pesquisa / filtro de paises
+echo '<form action="#" class="container-alura formulario-pesquisa-paises" method="post">';
 echo '<h2>Conheça nosso destinos</h2>';
 echo '<select name="paises" id="paises">';
 echo '<option value="">--Selecione--</option>';
 $paises = get_terms(array('taxonomy' => 'paises'));
 foreach($paises as $pais){
-    echo '<option value="' . $pais->slug . '">' . $pais->name . '</option>';
+    if(!empty($_POST['paises']) && $_POST['paises'] === $pais->slug){
+        echo '<option selected value="' . $pais->slug . '">' . $pais->name . '</option>';
+    }else{
+        echo '<option value="' . $pais->slug . '">' . $pais->name . '</option>';
+    }
 }
 echo '</select>';
 echo '<input type="submit" value="Pesquisar">';
 echo '</form>';
 
-$args = array('post_type' => 'destinos');
+$paisSelecionado = array(array(
+    'taxonomy' => 'paises',
+    'field' => 'slug',
+    'terms' => $_POST['paises']
+));
+
+$args = array(
+    'post_type' => 'destinos',
+    'tax_query' => !empty($_POST['paises']) ? $paisSelecionado : ''
+);
+
+// Lista os destions
 $query = new WP_Query($args);
 if($query->have_posts()){
     echo '<main class="page-destinos">';
@@ -31,5 +48,6 @@ if($query->have_posts()){
     echo '</ul>';
 }
 
+// rodape do site
 require_once('footer.php');
 ?>

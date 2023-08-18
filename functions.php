@@ -1,8 +1,26 @@
 <?php
+add_action('init', 'alura_intercambios_registrando_post_customizado_banner');
 add_action('init', 'alura_intercambios_registrando_taxonomia');
 add_action('init', 'alura_intercambios_registrando_menu');
 add_action('init', 'alura_intercambios_registrando_post_customizado');
 add_action('after_setup_theme', 'alura_intercambios_adicionando_recursos_ao_tema');
+
+/**
+ * Registra um post personalizado para banners.
+ *  
+ * @return void
+ */
+function alura_intercambios_registrando_post_customizado_banner(){
+    register_post_type(
+        'banners', array(
+            'labels' => array('name' => 'Banner'),
+            'public' => true,
+            'menu_position' => 4,
+            'menu_icon' => 'dashicons-format-image',
+            'supports' => array('title', 'thumbnail')
+        )
+    );
+}
 
 /**
  * Registra a taxonomia países.
