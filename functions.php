@@ -6,6 +6,67 @@ add_action('init', 'alura_intercambios_registrando_post_customizado');
 add_action('after_setup_theme', 'alura_intercambios_adicionando_recursos_ao_tema');
 add_action('add_meta_boxes', 'alura_intercambios_registrando_metabox');
 add_action('save_post', 'alura_intercambios_salvando_dados_metabox');
+add_action('wp_enqueue_scripts', 'alura_intercambios_adicionando_scripts');
+
+/**
+ * Recupera os textos para o banner.
+ *
+ * Essa função faz uma consulta ao tipo de post "banners" para recuperar os 
+ * textos para o banner. 
+ * 
+ * Ela retorna um array com os valores "texto_1" e "texto_2".
+ *
+ * @return array Um array com os valores "texto_1" e "texto_2".
+ */
+function pegandoTextosParaBanner(){
+    $args = array(
+        'post_type' => 'banners',
+        'post_status' => 'publish',
+        'posts_per_page' => 1
+    );
+
+    $query = new WP_Query($args);
+    if($query->have_posts()){
+        while($query->have_posts()){
+            $query->the_post();
+            $text1 = get_post_meta(get_the_ID(),'_texto_home_1',true);
+            $text2 = get_post_meta(get_the_ID(),'_texto_home_2',true);
+            return array(
+                'texto_1' => $text1,
+                'texto_2' => $text2
+            );
+        }
+    }
+}
+
+/**
+ * Adiciona script para animar texto no banner.
+ * 
+ * @return void
+ */
+function alura_intercambios_adicionando_scripts(){
+    $textosBanner = pegandoTextosParaBanner();
+
+    if(is_front_page()){
+        wp_enqueue_script(
+            'typed-js', 
+            get_template_directory_uri() . '/js/typed.min.js',
+            array(),
+            false,
+            true
+        );
+
+        wp_enqueue_script(
+            'texto-banner-js',
+            get_template_directory_uri() . '/js/texto-banner.js',
+            array('typed-js'),
+            false,
+            true
+        );
+
+        wp_localize_script('texto-banner-js', 'data', $textosBanner);
+    }
+}
 
 /**
  * Registra o metabox banners.
