@@ -4,6 +4,68 @@ add_action('init', 'alura_intercambios_registrando_taxonomia');
 add_action('init', 'alura_intercambios_registrando_menu');
 add_action('init', 'alura_intercambios_registrando_post_customizado');
 add_action('after_setup_theme', 'alura_intercambios_adicionando_recursos_ao_tema');
+add_action('add_meta_boxes', 'alura_intercambios_registrando_metabox');
+add_action('save_post', 'alura_intercambios_salvando_dados_metabox');
+
+/**
+ * Registra o metabox banners.
+ *
+ * @return void
+ */
+function alura_intercambios_registrando_metabox(){
+    add_meta_box(
+        'ai_registrando_metabox',
+        'Texto para a home',
+        'ai_funcao_callback',
+        'banners'
+    );
+}
+
+/**
+ * Gera o html da metabox banners.
+ *
+ * @param mixed $post
+ * @return void
+ */
+function ai_funcao_callback($post){
+    $texto_home_1 = get_post_meta(
+        $post->ID,
+        '_texto_home_1',  
+        true
+    );
+
+    $texto_home_2 = get_post_meta(
+        $post->ID,
+        '_texto_home_2',
+        true
+    );
+
+    echo '<label for="texto_home_1">Texto 1</label>';
+    echo '<input type="text" name="texto_home_1" style="width: 100%" value="' . $texto_home_1 . '"/>';
+    echo '<br>';
+    echo '<label for="texto_home_2">Texto 2</label>';
+    echo '<input type="text" name="texto_home_2" style="width: 100%" value="' . $texto_home_2 . '"/>';
+}
+
+/**
+ * Salva os dados da metabox para o banner.
+ *
+ * @param int $post_id O ID da postagem que está sendo salva.
+ * @return void
+ */
+function alura_intercambios_salvando_dados_metabox($post_id){
+    foreach($_POST as $key=>$value){
+        if($key !== 'texto_home_1' && $key !== 'texto_home_2'){
+            continue;
+        }
+        
+        update_post_meta(
+            $post_id, 
+            '_' . $key, 
+            $_POST[$key]
+        );
+    }
+}
 
 /**
  * Registra um post personalizado para banners.
